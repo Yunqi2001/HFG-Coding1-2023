@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Variable</title>
+</head>
+<body>
+    <img src="duck.jpeg" width=100%> 
+    <h1 id="title">To the Lighthouse</h1>
+    <nav>
+        <a href="https://en.wikipedia.org/wiki/Virginia_Woolf">by Virginia Woolf</a>
+    </nav>
+    <p id="article">
+        "Yes, of course, if it's fine tomorrow," said Mrs Ramsay. "But you'll have to be up with the lark," she added. 
+        To her son these words conveyed an extraordinary joy, as if it were settled, the expedition were bound to take place, and the wonder to which he had looked forward, for years and years it seemed, was, after a night's darkness and a day's sail, within touch. Since he belonged, even at the age of six, to that great clan which cannot keep this feeling separ- ate from that, but must let future prospects, with their joys and sorrows, cloud what is actually at hand, since to such people even in earliest childhood any turn in the wheel of sensation has the power to crystallise and transfix the moment upon which its gloom or radiance rests, James Ramsay, sitting on the floor cutting out pictures from the illustrated cata- logue of the Army and Navy stores, endowed the picture of a refrigerat- or, as his mother spoke, with heavenly bliss. It was fringed with joy. The wheelbarrow, the lawnmower, the sound of poplar trees, leaves whiten- ing before rain, rooks cawing, brooms knocking, dresses rustling—all these were so coloured and distinguished in his mind that he had already his private code, his secret language, though he appeared the im- age of stark and uncompromising severity, with his high forehead and his fierce blue eyes, impeccably candid and pure, frowning slightly at the sight of human frailty, so that his mother, watching him guide his scis- sors neatly round the refrigerator, imagined him all red and ermine on the Bench or directing a stern and momentous enterprise in some crisis of public affairs. 
+
+    </p>
+</body>
+<script>
+    //in this program I uesd a variable and getElementById() method to change the font of the article's title
+    let font;
+    console.log("font before is", font);
+    font = prompt("Please enter a font.", "");
+    console.log("font after is", font);
+    const myElement = document.getElementById("title");
+    myElement.style.fontFamily = font;
+</script>
+</html>
