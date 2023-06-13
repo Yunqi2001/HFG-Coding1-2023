@@ -1,5 +1,5 @@
 let pics = [
-    '01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.jpg', '010.jpg', '011.jpg', '012.jpg', '013.jpg', '014.jpg', '015.jpg', '016.jpg', '017.jpg', '018.jpeg', '019.jpg', '020.jpg','01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.jpg', '010.jpg', '011.jpg', '012.jpg', '013.jpg', '014.jpg', '015.jpg', '016.jpg', '017.jpg', '018.jpeg', '019.jpg', '020.jpg']
+    '01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.jpg', '010.jpg', '011.jpg', '012.jpg', '013.jpg', '014.jpg', '015.jpg', '016.jpg', '017.jpg', '018.jpg', '019.jpg', '020.jpg','01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.jpg', '010.jpg', '011.jpg', '012.jpg', '013.jpg', '014.jpg', '015.jpg', '016.jpg', '017.jpg', '018.jpg', '019.jpg', '020.jpg']
   
 
 let flippedCards = []
@@ -38,6 +38,10 @@ function createTable(){
     for(let i=0;i<5;i++){
         let row = document.createElement("tr");
         for (let j=0; j<8;j++){
+            if(currentIndex >= pics.length){
+                break;
+            }
+
             let cell = document.createElement("td");
             let front = pics[currentIndex];
             let card = createCard(front);
@@ -48,7 +52,7 @@ function createTable(){
             cell.appendChild(card);
             row.appendChild(cell);
             currentIndex ++;
-            };
+        };
         table.appendChild(row);
     }
 }
@@ -64,13 +68,15 @@ function flipCard(card){
     card.classList.add("flipped");
     flippedCards.push(card);
 
-    card.firstChild.src = card.getAttribute("data-symbol");
+    card.querySelector("img").src = card.getAttribute("data-symbol");
+    console.log(card.getAttribute("data-symbol")); // one image can't been display, use consle.log to debug 
 
     if(flippedCards.length === 2){
         lookCards();
-    }
-    if(flippedCards.length > 2){
+    }else if(flippedCards.length ===3 ){
         resetCards();
+        flippedCards.push(card);
+        card.querySelector("img").src = card.getAttribute("data-symbol");
     }
 
 }
@@ -87,10 +93,10 @@ function lookCards(){
         firstCard.classList.add("matched");
         secondCard.classList.add("matched");
 
-        setTimeout(removeMatched,1000);
+        setTimeout(removeMatched,500);
 
         flippedCards = [];
-        checkGameOver();
+        setTimeout(checkGameOver,600);
     }
 }
 
