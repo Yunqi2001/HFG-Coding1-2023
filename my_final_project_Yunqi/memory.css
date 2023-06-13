@@ -1,20 +1,19 @@
 .table-container {
   max-width: 100%;
   overflow-x: auto;
+  overflow-y: auto;
 }
 
 table {
-  width: 100%;
+  width: auto;
   table-layout: fixed;
 }
 
 td {
-  text-align: center;
-  padding: 10px;
+  padding: 5px;
 }
 
 img {
   max-width: 100%;
-  height: auto;
 }
 
