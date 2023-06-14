@@ -2,7 +2,8 @@ let pics = [
     '01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.jpg', '010.jpg', '011.jpg', '012.jpg', '013.jpg', '014.jpg', '015.jpg', '016.jpg', '017.jpg', '018.jpg', '019.jpg', '020.jpg','01.jpg', '02.jpg', '03.jpg', '04.jpg', '05.jpg', '06.jpg', '07.jpg', '08.jpg', '09.jpg', '010.jpg', '011.jpg', '012.jpg', '013.jpg', '014.jpg', '015.jpg', '016.jpg', '017.jpg', '018.jpg', '019.jpg', '020.jpg']
   
 
-let flippedCards = []
+let flippedCards = [];
+let matchedCards = [];
 let currentIndex = 0;
 
 
@@ -55,10 +56,12 @@ function createTable(){
         };
         table.appendChild(row);
     }
+
+    document.querySelector("#restartButton").addEventListener("click", restartGame);
 }
 
 createTable();
-
+updateCounter();
 
 function flipCard(card){
     if(card.classList.contains("flipped")){
@@ -67,7 +70,6 @@ function flipCard(card){
 
     card.classList.add("flipped");
     flippedCards.push(card);
-
     card.querySelector("img").src = card.getAttribute("data-symbol");
     console.log(card.getAttribute("data-symbol")); // one image can't been display, use consle.log to debug 
 
@@ -93,9 +95,12 @@ function lookCards(){
         firstCard.classList.add("matched");
         secondCard.classList.add("matched");
 
+        matchedCards.push(firstCard, secondCard);
+
         setTimeout(removeMatched,500);
 
         flippedCards = [];
+        setTimeout(updateCounter, 100);
         setTimeout(checkGameOver,600);
     }
 }
@@ -112,16 +117,28 @@ function resetCards() {
 
 
 function removeMatched(){
-    let matchedCards = document.querySelectorAll(".card.matched");
-    matchedCards.forEach(function (card) {
+    document.querySelectorAll(".card.matched").forEach(function (card) {
         card.parentNode.removeChild(card);
     });
 }
 
+function updateCounter(){
+    let counter = document.getElementById("counter");
+    counter.textContent = "Matched Cards: " + matchedCards.length +"/"+ "40";
+}
 
 function checkGameOver() {
-    let remainingCards = document.querySelectorAll(".card:not(.matched)");
-    if (remainingCards.length === 0) {
+    if (matchedCards.length === 40) {
       alert("Congratulations! You have completed the game!");
     }
   }
+
+function restartGame(){
+    document.querySelector("#gameContainer").innerHTML = "";
+    flippedCards = [];
+    matchedCards = [];
+    currentIndex = 0;
+    
+    shuffle(pics);
+    createTable();
+}
