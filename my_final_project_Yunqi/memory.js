@@ -6,6 +6,11 @@ let flippedCards = [];
 let matchedCards = [];
 let currentIndex = 0;
 
+let startTime;
+let timerInterval;
+let timerElement = document.getElementById("timer");
+let minutes;
+let seconds;
 
 function shuffle(array){
     for(let i = array.length - 1; i>0; i--){
@@ -64,7 +69,10 @@ createTable();
 updateCounter();
 
 function flipCard(card){
-    if(card.classList.contains("flipped")){
+    if(card.classList.contains("flipped") || card.classList.contains("matched")){
+        return;
+    }
+    if (flippedCards.includes(card)) {
         return;
     }
 
@@ -73,10 +81,18 @@ function flipCard(card){
     card.querySelector("img").src = card.getAttribute("data-symbol");
     console.log(card.getAttribute("data-symbol")); // one image can't been display, use consle.log to debug 
 
+    if(flippedCards.length === 1){
+        if(!timerInterval){
+            startTimer();
+        }
+    }
     if(flippedCards.length === 2){
         lookCards();
-    }else if(flippedCards.length ===3 ){
+        return;
+    }
+    if(flippedCards.length ===3){
         resetCards();
+        
         flippedCards.push(card);
         card.querySelector("img").src = card.getAttribute("data-symbol");
     }
@@ -88,7 +104,7 @@ function lookCards(){
     let firstCard = flippedCards[0];
     let secondCard = flippedCards[1];
 
-    if(firstCard.getAttribute("data-symbol") === secondCard.getAttribute("data-symbol")) {
+    if(firstCard.getAttribute("data-symbol") === secondCard.getAttribute("data-symbol") && firstCard != secondCard) {
         firstCard.setAttribute("data-flipped", "true");
         secondCard.setAttribute("data-flipped", "true");
 
@@ -97,11 +113,10 @@ function lookCards(){
 
         matchedCards.push(firstCard, secondCard);
 
-        setTimeout(removeMatched,500);
-
+        updateCounter();
         flippedCards = [];
-        setTimeout(updateCounter, 100);
-        setTimeout(checkGameOver,600);
+        setTimeout(removeMatched,100);
+        setTimeout(checkGameOver,200);
     }
 }
 
@@ -118,7 +133,7 @@ function resetCards() {
 
 function removeMatched(){
     document.querySelectorAll(".card.matched").forEach(function (card) {
-        card.parentNode.removeChild(card);
+        card.style.visibility = "hidden";
     });
 }
 
@@ -129,7 +144,10 @@ function updateCounter(){
 
 function checkGameOver() {
     if (matchedCards.length === 40) {
-      alert("Congratulations! You have completed the game!");
+        clearInterval(timerInterval);
+        timerElement.textContent = "Timer: " + formatTime(minutes) + ":" + formatTime(seconds);
+
+        alert("Congratulations! You have completed the game!");
     }
   }
 
@@ -141,4 +159,30 @@ function restartGame(){
     
     shuffle(pics);
     createTable();
+    updateCounter();
+
+    clearInterval(timerInterval);
+    timerInterval = null;
+    timerElement.textContent = "Timer: 00:00";
+
 }
+
+function startTimer(){
+    startTime = new Date();
+    timerInterval = setInterval(updateTimer, 1000);
+}
+
+function updateTimer(){
+    let currentTime = new Date();
+    let elapsedTime = Math.floor((currentTime - startTime) / 1000);
+
+    minutes = Math.floor(elapsedTime / 60);
+    seconds = elapsedTime % 60;
+
+    timerElement.textContent = "Timer: " + formatTime(minutes) + ":" + formatTime(seconds);
+}
+
+function formatTime(time) {
+    return time < 10 ? "0" + time : String(time);
+}
+
