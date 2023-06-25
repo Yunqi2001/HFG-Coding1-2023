@@ -4,12 +4,24 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Yunqi's memory game</title>
+    <title>Yunqi's color memory game</title>
     <link rel="stylesheet" href="memory.css">
 </head>
 <body>
+    <div class="game-name">Color Memory Game</div>
+    <div class="game-instructions">Try to match all the cards in the shortest time!</div>
+
+    <button id="startButton" onclick="startGame()">enter</button>
+   
+    <div id="win-screen">
+        <div id="win-text"></div>
+        <div id="win-score"></div>
+    </div>
+
     <div class="game-container" id="gameContainer"></div>
-    <div id="counter"></div>
+
+    <div id="counter"></div> 
+    <div id="timer">Timer: 00:00</div>
     <button id="restartButton">Restart</button>
     
     <script src="memory.js"></script>
