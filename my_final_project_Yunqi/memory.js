@@ -12,6 +12,12 @@ let timerElement = document.getElementById("timer");
 let minutes;
 let seconds;
 
+let flipSound = new Audio("flipSound.mp3");
+let matchedSound = new Audio("matched.mp3");
+let dealingSound = new Audio("dealing.mp3");
+
+let canClick = false;
+
 function shuffle(array){
     for(let i = array.length - 1; i>0; i--){
         const j = Math.floor(Math.random()*(i+1));
@@ -35,6 +41,10 @@ function createCard(pic){
     display.src = "back.jpg";
     card.appendChild(display);
 
+    card.addEventListener("click", function(){
+        flipCard(card);
+    });
+
     return card;
 }
 
@@ -51,9 +61,8 @@ function createTable(){
             let cell = document.createElement("td");
             let front = pics[currentIndex];
             let card = createCard(front);
-            card.addEventListener("click", function(){
-                flipCard(card);
-            });
+
+            card.style.opacity = "0";
             
             cell.appendChild(card);
             row.appendChild(cell);
@@ -65,21 +74,62 @@ function createTable(){
     document.querySelector("#restartButton").addEventListener("click", restartGame);
 }
 
-createTable();
-updateCounter();
+function dealingAnimation() {
+    dealingSound.play();
+    let cards = document.querySelectorAll(".card");
+    let delay = 0; 
+    let duration = 500;
+  
+    cards.forEach(function(card) {
+      setTimeout(function() {
+        card.style.opacity = "1";
+        card.style.animation = `showCardAnimation ${duration}ms forwards`;
+      }, delay);
+  
+      delay += 100; 
+    });
+    
+    setTimeout(function() {
+        canClick = true;
+      }, delay + duration);
+      console.log(delay + duration);
+  }
+
+function startGame(){
+    startButton.style.display = "none";
+    document.getElementById("restartButton").style.display = "block";
+    document.getElementById("counter").style.display = "block";
+    document.getElementById("timer").style.display = "block";
+    
+    createTable();
+    dealingAnimation();
+    updateCounter();
+}
 
 function flipCard(card){
+    if (!canClick) {
+        return;
+    }
     if(card.classList.contains("flipped") || card.classList.contains("matched")){
         return;
     }
     if (flippedCards.includes(card)) {
         return;
     }
+    if (!flipSound.paused) {
+        return;
+    }
+    
+    flipSound.play();
+
+    setTimeout(function(){
+        card.querySelector("img").src = card.getAttribute("data-symbol");
+    }, 100)
 
     card.classList.add("flipped");
     flippedCards.push(card);
-    card.querySelector("img").src = card.getAttribute("data-symbol");
-    console.log(card.getAttribute("data-symbol")); // one image can't been display, use consle.log to debug 
+
+    console.log(card.getAttribute("data-symbol")); 
 
     if(flippedCards.length === 1){
         if(!timerInterval){
@@ -95,8 +145,9 @@ function flipCard(card){
         
         flippedCards.push(card);
         card.querySelector("img").src = card.getAttribute("data-symbol");
-    }
+        card.classList.add("flipped");
 
+    }
 }
 
 
@@ -105,6 +156,8 @@ function lookCards(){
     let secondCard = flippedCards[1];
 
     if(firstCard.getAttribute("data-symbol") === secondCard.getAttribute("data-symbol") && firstCard != secondCard) {
+        matchedSound.play();
+        
         firstCard.setAttribute("data-flipped", "true");
         secondCard.setAttribute("data-flipped", "true");
 
@@ -115,8 +168,12 @@ function lookCards(){
 
         updateCounter();
         flippedCards = [];
-        setTimeout(removeMatched,100);
-        setTimeout(checkGameOver,200);
+
+        firstCard.style.animation = "shakeAnimation 1s ease-in-out forwards";
+        secondCard.style.animation = "shakeAnimation 1s ease-in-out forwards";
+
+        setTimeout(removeMatched,1100);
+        setTimeout(checkGameOver,1200);
     }
 }
 
@@ -126,6 +183,7 @@ function resetCards() {
         let card = flippedCards[i];
         card.classList.remove("flipped");
         card.firstChild.src = "back.jpg";
+        card.style.animation = ""; 
     }
     flippedCards = [];
 }
@@ -139,7 +197,7 @@ function removeMatched(){
 
 function updateCounter(){
     let counter = document.getElementById("counter");
-    counter.textContent = "Matched Cards: " + matchedCards.length +"/"+ "40";
+    counter.textContent = "Score: " + matchedCards.length;
 }
 
 function checkGameOver() {
@@ -147,7 +205,7 @@ function checkGameOver() {
         clearInterval(timerInterval);
         timerElement.textContent = "Timer: " + formatTime(minutes) + ":" + formatTime(seconds);
 
-        alert("Congratulations! You have completed the game!");
+        winScreen();
     }
   }
 
@@ -159,6 +217,8 @@ function restartGame(){
     
     shuffle(pics);
     createTable();
+    canClick = false;
+    dealingAnimation();
     updateCounter();
 
     clearInterval(timerInterval);
@@ -185,4 +245,17 @@ function updateTimer(){
 function formatTime(time) {
     return time < 10 ? "0" + time : String(time);
 }
+
+function winScreen(){
+    let winScreen = document.getElementById("win-screen");
+    let winText = document.getElementById("win-text");
+    let winScore = document.getElementById("win-score");
+
+    winText.textContent = "Congratulations! You have completed the game in " + formatTime(minutes) + ":" + formatTime(seconds) + ".";
+    winScore.textContent = "Score: " + matchedCards.length;
+
+    winScreen.classList.add("show");
+}
+
+
 
